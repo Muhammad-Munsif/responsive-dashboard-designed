@@ -1,824 +1,811 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <!-- Enhanced viewport tag -->
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes"
-    />
-    <!-- Safari specific -->
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta
-      name="apple-mobile-web-app-status-bar-style"
-      content="black-translucent"
-    />
-    <!-- Windows specific -->
-    <meta name="msapplication-config" content="none" />
-    <title>Responsive Dashboard</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-    />
-    <!-- CSS link -->
-    <link rel="stylesheet" href="css/style.css" />
-    <style>
-      /* Base Styles */
-:root {
-  --primary-color: #4e73df;
-  --secondary-color: #1cc88a;
-  --warning-color: #f6c23e;
-  --danger-color: #e74a3b;
-  --dark-color: #5a5c69;
-  --light-color: #f8f9fc;
-  --sidebar-width: 250px;
-  --sidebar-collapsed-width: 80px;
-  --top-nav-height: 60px;
-  --transition-speed: 0.3s;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-}
-
-html {
-  font-size: 16px;
-}
-
-body {
-  background-color: #f8f9fc;
-  color: #333;
-}
-
-/* Dashboard Container */
-.dashboard-container {
-  display: flex;
-  min-height: 100vh;
-}
-
-/* Sidebar Styles */
-.sidebar {
-  width: var(--sidebar-width);
-  background-color: #fff;
-  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-  transition: width var(--transition-speed);
-  position: fixed;
-  height: 100vh;
-  z-index: 1000;
-}
-
-.sidebar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 1rem;
-  height: var(--top-nav-height);
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.sidebar-header h2 {
-  font-size: 1.2rem;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.close-sidebar {
-  background: none;
-  border: none;
-  color: white;
-  cursor: pointer;
-  font-size: 1.2rem;
-  display: none;
-}
-
-.sidebar-nav ul {
-  list-style: none;
-  padding: 1rem 0;
-}
-
-.sidebar-nav li a {
-  display: flex;
-  align-items: center;
-  padding: 1rem 1.5rem;
-  color: var(--dark-color);
-  text-decoration: none;
-  transition: all 0.3s;
-  gap: 0.5rem;
-}
-
-.sidebar-nav li a:hover {
-  background-color: var(--light-color);
-  color: var(--primary-color);
-}
-
-.sidebar-nav li.active a {
-  color: var(--primary-color);
-  font-weight: 600;
-  border-left: 3px solid var(--primary-color);
-  background-color: rgba(78, 115, 223, 0.1);
-}
-
-.sidebar-nav .badge {
-  margin-left: auto;
-  background-color: var(--danger-color);
-  color: white;
-  border-radius: 50%;
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.7rem;
-}
-
-/* Main Content Styles */
-.main-content {
-  flex: 1;
-  margin-left: var(--sidebar-width);
-  transition: margin-left var(--transition-speed);
-}
-
-/* Top Navigation */
-.top-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 1.5rem;
-  height: var(--top-nav-height);
-  background-color: white;
-  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.toggle-sidebar {
-  background: none;
-  border: none;
-  font-size: 1.2rem;
-  cursor: pointer;
-  color: var(--dark-color);
-  display: none;
-}
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  background-color: var(--light-color);
-  border-radius: 0.35rem;
-  overflow: hidden;
-}
-
-.search-bar input {
-  border: none;
-  padding: 0.5rem 1rem;
-  background: transparent;
-  outline: none;
-  width: 200px;
-}
-
-.search-bar button {
-  background: none;
-  border: none;
-  padding: 0.5rem;
-  cursor: pointer;
-  color: var(--dark-color);
-}
-
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.notification {
-  position: relative;
-  cursor: pointer;
-}
-
-.notification .badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background-color: var(--danger-color);
-  color: white;
-  border-radius: 50%;
-  width: 18px;
-  height: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.6rem;
-}
-
-.user-profile img {
-  border-radius: 50%;
-}
-
-/* Dashboard Content */
-.dashboard-content {
-  padding: 1.5rem;
-}
-
-.welcome-banner {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 2rem;
-  border-radius: 0.35rem;
-  margin-bottom: 1.5rem;
-}
-
-.welcome-banner h1 {
-  font-size: 1.8rem;
-  margin-bottom: 0.5rem;
-}
-
-.welcome-banner p {
-  opacity: 0.8;
-}
-
-/* Stats Grid */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.stat-card {
-  background-color: white;
-  border-radius: 0.35rem;
-  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-  display: flex;
-  padding: 1.5rem;
-  transition: transform 0.3s;
-}
-
-.stat-card:hover {
-  transform: translateY(-5px);
-}
-
-.stat-icon {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.5rem;
-  margin-right: 1rem;
-}
-
-.stat-info h3 {
-  font-size: 0.9rem;
-  color: var(--dark-color);
-  margin-bottom: 0.25rem;
-  font-weight: 600;
-}
-
-.stat-info p {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #333;
-}
-
-/* Charts Row */
-.charts-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 1.5rem;
-}
-
-.chart-container {
-  background-color: white;
-  border-radius: 0.35rem;
-  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-  padding: 1.5rem;
-}
-
-.chart-container h3 {
-  margin-bottom: 1rem;
-  color: var(--dark-color);
-  font-size: 1.1rem;
-}
-
-/* Projects Table */
-.projects-table {
-  background-color: white;
-  border-radius: 0.35rem;
-  box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
-  padding: 1.5rem;
-}
-
-.table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.table-header h3 {
-  color: var(--dark-color);
-  font-size: 1.1rem;
-}
-
-.btn {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 0.35rem;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn:hover {
-  background-color: #3a5bd9;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th,
-td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid #eee;
-}
-
-th {
-  font-weight: 600;
-  color: var(--dark-color);
-  background-color: #f8f9fc;
-}
-
-.status {
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.35rem;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.status.completed {
-  background-color: rgba(28, 200, 138, 0.2);
-  color: var(--secondary-color);
-}
-
-.status.in-progress {
-  background-color: rgba(246, 194, 62, 0.2);
-  color: var(--warning-color);
-}
-
-.status.pending {
-  background-color: rgba(231, 74, 59, 0.2);
-  color: var(--danger-color);
-}
-
-.btn-icon {
-  background: none;
-  border: none;
-  color: var(--dark-color);
-  cursor: pointer;
-  font-size: 1rem;
-  margin-right: 0.5rem;
-  transition: color 0.3s;
-}
-
-.btn-icon:hover {
-  color: var(--primary-color);
-}
-
-/* Responsive Styles */
-
-@media (max-width: 600px) {
-  html {
-    font-size: 14px;
-  }
-}
-
-@media (max-width: 400px) {
-  html {
-    font-size: 13px;
-  }
-}
-
-/* Better Touch Targets */
-button,
-.btn,
-.btn-icon,
-.sidebar-nav li a {
-  min-width: 44px;
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* Enhanced Table Responsiveness */
-@media (max-width: 768px) {
-  .projects-table {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  table {
-    width: 100%;
-    display: block;
-  }
-
-  th,
-  td {
-    min-width: 120px;
-  }
-}
-
-/* Better Chart Containers */
-.chart-container {
-  position: relative;
-  min-height: 300px;
-}
-
-@media (max-width: 500px) {
-  .chart-container {
-    min-height: 250px;
-  }
-}
-
-/* Improved Sidebar Transition */
-.sidebar {
-  transform: translateX(-100%);
-  transition: transform 0.3s ease-out;
-  width: 280px;
-}
-
-.sidebar.active {
-  transform: translateX(0);
-}
-
-@media (min-width: 769px) {
-  .sidebar {
-    transform: translateX(0);
-    width: var(--sidebar-width);
-  }
-
-  .toggle-sidebar,
-  .close-sidebar {
-    display: none !important;
-  }
-}
-
-/* Better Stats Grid */
-.stats-grid {
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-}
-
-/* Enhanced Search Bar */
-.search-bar {
-  flex: 1;
-  max-width: 400px;
-  margin: 0 1rem;
-}
-
-@media (max-width: 600px) {
-  .search-bar {
-    display: none;
-  }
-
-  .mobile-search {
-    display: flex !important;
-    margin: 1rem 0;
-    width: 100%;
-  }
-}
-
-/* Add this to your HTML */
-.mobile-search {
-  display: none;
-}
-
-/* Responsive Styles */
-
-@media (max-width: 1200px) {
-  .sidebar {
-    width: var(--sidebar-collapsed-width);
-  }
-
-  .sidebar-header h2 span,
-  .sidebar-nav li a span:not(.badge) {
-    display: none;
-  }
-
-  .sidebar-header h2 {
-    justify-content: center;
-  }
-
-  .sidebar-nav li a {
-    justify-content: center;
-    padding: 1rem 0;
-  }
-
-  .sidebar-nav .badge {
-    display: none;
-  }
-
-  .main-content {
-    margin-left: var(--sidebar-collapsed-width);
-  }
-}
-
-@media (max-width: 992px) {
-  .charts-row {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
-    width: 280px;
-  }
-
-  .sidebar.active {
-    transform: translateX(0);
-  }
-
-  .sidebar-header h2 span,
-  .sidebar-nav li a span:not(.badge) {
-    display: inline;
-  }
-
-  .sidebar-nav li a {
-    justify-content: flex-start;
-    padding: 1rem 1.5rem;
-  }
-
-  .sidebar-nav .badge {
-    display: flex;
-  }
-
-  .close-sidebar {
-    display: block;
-  }
-
-  .main-content {
-    margin-left: 0;
-  }
-
-  .toggle-sidebar {
-    display: block;
-  }
-
-  .search-bar input {
-    width: 150px;
-  }
-
-  .user-profile span {
-    display: none;
-  }
-}
-
-@media (max-width: 576px) {
-  .dashboard-content {
-    padding: 1rem;
-  }
-
-  .welcome-banner {
-    padding: 1.5rem 1rem;
-  }
-
-  .welcome-banner h1 {
-    font-size: 1.5rem;
-  }
-
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .search-bar {
-    display: none;
-  }
-
-  table {
-    display: block;
-    overflow-x: auto;
-  }
-}
-
-    </style>
-  </head>
-  <body>
-    <div class="dashboard-container">
-      <!-- Sidebar Navigation -->
-      <aside class="sidebar">
-        <div class="sidebar-header">
-          <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
-          <button class="close-sidebar" aria-label="Close sidebar">
-            <i class="fas fa-times"></i>
-          </button>
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- Enhanced viewport tag -->
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <!-- Safari specific -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <!-- Windows specific -->
+  <meta name="msapplication-config" content="none" />
+  <title>Responsive Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- CSS link -->
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* Base Styles */
+    :root {
+      --primary-color: #4e73df;
+      --secondary-color: #1cc88a;
+      --warning-color: #f6c23e;
+      --danger-color: #e74a3b;
+      --dark-color: #5a5c69;
+      --light-color: #f8f9fc;
+      --sidebar-width: 250px;
+      --sidebar-collapsed-width: 80px;
+      --top-nav-height: 60px;
+      --transition-speed: 0.3s;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      background-color: #f8f9fc;
+      color: #333;
+    }
+
+    /* Dashboard Container */
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: #fff;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+      transition: width var(--transition-speed);
+      position: fixed;
+      height: 100vh;
+      z-index: 1000;
+    }
+
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 1rem;
+      height: var(--top-nav-height);
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .sidebar-header h2 {
+      font-size: 1.2rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .close-sidebar {
+      background: none;
+      border: none;
+      color: white;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: none;
+    }
+
+    .sidebar-nav ul {
+      list-style: none;
+      padding: 1rem 0;
+    }
+
+    .sidebar-nav li a {
+      display: flex;
+      align-items: center;
+      padding: 1rem 1.5rem;
+      color: var(--dark-color);
+      text-decoration: none;
+      transition: all 0.3s;
+      gap: 0.5rem;
+    }
+
+    .sidebar-nav li a:hover {
+      background-color: var(--light-color);
+      color: var(--primary-color);
+    }
+
+    .sidebar-nav li.active a {
+      color: var(--primary-color);
+      font-weight: 600;
+      border-left: 3px solid var(--primary-color);
+      background-color: rgba(78, 115, 223, 0.1);
+    }
+
+    .sidebar-nav .badge {
+      margin-left: auto;
+      background-color: var(--danger-color);
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+
+    /* Main Content Styles */
+    .main-content {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      transition: margin-left var(--transition-speed);
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1.5rem;
+      height: var(--top-nav-height);
+      background-color: white;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .toggle-sidebar {
+      background: none;
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--dark-color);
+      display: none;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background-color: var(--light-color);
+      border-radius: 0.35rem;
+      overflow: hidden;
+    }
+
+    .search-bar input {
+      border: none;
+      padding: 0.5rem 1rem;
+      background: transparent;
+      outline: none;
+      width: 200px;
+    }
+
+    .search-bar button {
+      background: none;
+      border: none;
+      padding: 0.5rem;
+      cursor: pointer;
+      color: var(--dark-color);
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .notification {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .notification .badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background-color: var(--danger-color);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+    }
+
+    .user-profile img {
+      border-radius: 50%;
+    }
+
+    /* Dashboard Content */
+    .dashboard-content {
+      padding: 1.5rem;
+    }
+
+    .welcome-banner {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 2rem;
+      border-radius: 0.35rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .welcome-banner h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .welcome-banner p {
+      opacity: 0.8;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background-color: white;
+      border-radius: 0.35rem;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+      display: flex;
+      padding: 1.5rem;
+      transition: transform 0.3s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      margin-right: 1rem;
+    }
+
+    .stat-info h3 {
+      font-size: 0.9rem;
+      color: var(--dark-color);
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+
+    .stat-info p {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #333;
+    }
+
+    /* Charts Row */
+    .charts-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .chart-container {
+      background-color: white;
+      border-radius: 0.35rem;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+      padding: 1.5rem;
+    }
+
+    .chart-container h3 {
+      margin-bottom: 1rem;
+      color: var(--dark-color);
+      font-size: 1.1rem;
+    }
+
+    /* Projects Table */
+    .projects-table {
+      background-color: white;
+      border-radius: 0.35rem;
+      box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+      padding: 1.5rem;
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .table-header h3 {
+      color: var(--dark-color);
+      font-size: 1.1rem;
+    }
+
+    .btn {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 0.35rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #3a5bd9;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      font-weight: 600;
+      color: var(--dark-color);
+      background-color: #f8f9fc;
+    }
+
+    .status {
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.35rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .status.completed {
+      background-color: rgba(28, 200, 138, 0.2);
+      color: var(--secondary-color);
+    }
+
+    .status.in-progress {
+      background-color: rgba(246, 194, 62, 0.2);
+      color: var(--warning-color);
+    }
+
+    .status.pending {
+      background-color: rgba(231, 74, 59, 0.2);
+      color: var(--danger-color);
+    }
+
+    .btn-icon {
+      background: none;
+      border: none;
+      color: var(--dark-color);
+      cursor: pointer;
+      font-size: 1rem;
+      margin-right: 0.5rem;
+      transition: color 0.3s;
+    }
+
+    .btn-icon:hover {
+      color: var(--primary-color);
+    }
+
+    /* Responsive Styles */
+
+    @media (max-width: 600px) {
+      html {
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      html {
+        font-size: 13px;
+      }
+    }
+
+    /* Better Touch Targets */
+    button,
+    .btn,
+    .btn-icon,
+    .sidebar-nav li a {
+      min-width: 44px;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Enhanced Table Responsiveness */
+    @media (max-width: 768px) {
+      .projects-table {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      table {
+        width: 100%;
+        display: block;
+      }
+
+      th,
+      td {
+        min-width: 120px;
+      }
+    }
+
+    /* Better Chart Containers */
+    .chart-container {
+      position: relative;
+      min-height: 300px;
+    }
+
+    @media (max-width: 500px) {
+      .chart-container {
+        min-height: 250px;
+      }
+    }
+
+    /* Improved Sidebar Transition */
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform 0.3s ease-out;
+      width: 280px;
+    }
+
+    .sidebar.active {
+      transform: translateX(0);
+    }
+
+    @media (min-width: 769px) {
+      .sidebar {
+        transform: translateX(0);
+        width: var(--sidebar-width);
+      }
+
+      .toggle-sidebar,
+      .close-sidebar {
+        display: none !important;
+      }
+    }
+
+    /* Better Stats Grid */
+    .stats-grid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    /* Enhanced Search Bar */
+    .search-bar {
+      flex: 1;
+      max-width: 400px;
+      margin: 0 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .search-bar {
+        display: none;
+      }
+
+      .mobile-search {
+        display: flex !important;
+        margin: 1rem 0;
+        width: 100%;
+      }
+    }
+
+    /* Add this to your HTML */
+    .mobile-search {
+      display: none;
+    }
+
+    /* Responsive Styles */
+
+    @media (max-width: 1200px) {
+      .sidebar {
+        width: var(--sidebar-collapsed-width);
+      }
+
+      .sidebar-header h2 span,
+      .sidebar-nav li a span:not(.badge) {
+        display: none;
+      }
+
+      .sidebar-header h2 {
+        justify-content: center;
+      }
+
+      .sidebar-nav li a {
+        justify-content: center;
+        padding: 1rem 0;
+      }
+
+      .sidebar-nav .badge {
+        display: none;
+      }
+
+      .main-content {
+        margin-left: var(--sidebar-collapsed-width);
+      }
+    }
+
+    @media (max-width: 992px) {
+      .charts-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 280px;
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .sidebar-header h2 span,
+      .sidebar-nav li a span:not(.badge) {
+        display: inline;
+      }
+
+      .sidebar-nav li a {
+        justify-content: flex-start;
+        padding: 1rem 1.5rem;
+      }
+
+      .sidebar-nav .badge {
+        display: flex;
+      }
+
+      .close-sidebar {
+        display: block;
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .toggle-sidebar {
+        display: block;
+      }
+
+      .search-bar input {
+        width: 150px;
+      }
+
+      .user-profile span {
+        display: none;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .dashboard-content {
+        padding: 1rem;
+      }
+
+      .welcome-banner {
+        padding: 1.5rem 1rem;
+      }
+
+      .welcome-banner h1 {
+        font-size: 1.5rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .search-bar {
+        display: none;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
+        <button class="close-sidebar" aria-label="Close sidebar">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li class="active">
+            <a href="#"><i class="fas fa-home"></i> Home</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-chart-bar"></i> Analytics</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-envelope"></i> Messages
+              <span class="badge">5</span></a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-calendar"></i> Calendar</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-cog"></i> Settings</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-user"></i> Profile</a>
+          </li>
+          <li>
+            <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Navigation -->
+      <header class="top-nav">
+        <button class="toggle-sidebar" aria-label="Toggle sidebar">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="search-bar">
+          <input type="text" placeholder="Search..." />
+          <button><i class="fas fa-search"></i></button>
         </div>
-        <nav class="sidebar-nav">
-          <ul>
-            <li class="active">
-              <a href="#"><i class="fas fa-home"></i> Home</a>
-            </li>
-            <li>
-              <a href="#"><i class="fas fa-chart-bar"></i> Analytics</a>
-            </li>
-            <li>
-              <a href="#"
-                ><i class="fas fa-envelope"></i> Messages
-                <span class="badge">5</span></a
-              >
-            </li>
-            <li>
-              <a href="#"><i class="fas fa-calendar"></i> Calendar</a>
-            </li>
-            <li>
-              <a href="#"><i class="fas fa-cog"></i> Settings</a>
-            </li>
-            <li>
-              <a href="#"><i class="fas fa-user"></i> Profile</a>
-            </li>
-            <li>
-              <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
-            </li>
-          </ul>
-        </nav>
-      </aside>
-
-      <!-- Main Content -->
-      <main class="main-content">
-        <!-- Top Navigation -->
-        <header class="top-nav">
-          <button class="toggle-sidebar" aria-label="Toggle sidebar">
-            <i class="fas fa-bars"></i>
-          </button>
-          <div class="search-bar">
-            <input type="text" placeholder="Search..." />
-            <button><i class="fas fa-search"></i></button>
+        <div class="user-profile">
+          <div class="notification">
+            <i class="fas fa-bell"></i>
+            <span class="badge">3</span>
           </div>
-          <div class="user-profile">
-            <div class="notification">
-              <i class="fas fa-bell"></i>
-              <span class="badge">3</span>
-            </div>
-            <img
-              src="images/team-1.jpg"
-              alt="User profile"
-              width="40"
-              height="40"
-            />
-            <span>John Doe</span>
-          </div>
-        </header>
+          <img src="images/team-1.jpg" alt="User profile" width="40" height="40" />
+          <span>John Doe</span>
+        </div>
+      </header>
 
-        <!-- Dashboard Content -->
-        <div class="dashboard-content">
-          <div class="welcome-banner">
-            <h1>Welcome back, John!</h1>
-            <p>Here's what's happening with your dashboard today.</p>
-          </div>
+      <!-- Dashboard Content -->
+      <div class="dashboard-content">
+        <div class="welcome-banner">
+          <h1>Welcome back, John!</h1>
+          <p>Here's what's happening with your dashboard today.</p>
+        </div>
 
-          <!-- Stats Cards -->
-          <div class="stats-grid">
-            <div class="stat-card">
-              <div class="stat-icon" style="background-color: #4e73df">
-                <i class="fas fa-calendar"></i>
-              </div>
-              <div class="stat-info">
-                <h3>Total Projects</h3>
-                <p>24</p>
-              </div>
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon" style="background-color: #4e73df">
+              <i class="fas fa-calendar"></i>
             </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background-color: #1cc88a">
-                <i class="fas fa-check-circle"></i>
-              </div>
-              <div class="stat-info">
-                <h3>Completed</h3>
-                <p>18</p>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background-color: #f6c23e">
-                <i class="fas fa-tasks"></i>
-              </div>
-              <div class="stat-info">
-                <h3>In Progress</h3>
-                <p>4</p>
-              </div>
-            </div>
-            <div class="stat-card">
-              <div class="stat-icon" style="background-color: #e74a3b">
-                <i class="fas fa-exclamation-circle"></i>
-              </div>
-              <div class="stat-info">
-                <h3>Pending</h3>
-                <p>2</p>
-              </div>
+            <div class="stat-info">
+              <h3>Total Projects</h3>
+              <p>24</p>
             </div>
           </div>
-
-          <!-- Charts Row -->
-          <div class="charts-row">
-            <div class="chart-container">
-              <h3>Project Completion</h3>
-              <canvas id="completionChart"></canvas>
+          <div class="stat-card">
+            <div class="stat-icon" style="background-color: #1cc88a">
+              <i class="fas fa-check-circle"></i>
             </div>
-            <div class="chart-container">
-              <h3>Monthly Traffic</h3>
-              <canvas id="trafficChart"></canvas>
+            <div class="stat-info">
+              <h3>Completed</h3>
+              <p>18</p>
             </div>
           </div>
-
-          <!-- Projects Table -->
-          <div class="projects-table">
-            <div class="table-header">
-              <h3>Recent Projects</h3>
-              <button class="btn">View All</button>
+          <div class="stat-card">
+            <div class="stat-icon" style="background-color: #f6c23e">
+              <i class="fas fa-tasks"></i>
             </div>
-            <table>
-              <thead>
-                <tr>
-                  <th>Project Name</th>
-                  <th>Start Date</th>
-                  <th>Deadline</th>
-                  <th>Status</th>
-                  <th>Team</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Website Redesign</td>
-                  <td>May 1, 2023</td>
-                  <td>Jun 15, 2023</td>
-                  <td><span class="status completed">Completed</span></td>
-                  <td>5</td>
-                  <td>
-                    <button class="btn-icon"><i class="fas fa-eye"></i></button>
-                    <button class="btn-icon">
-                      <i class="fas fa-edit"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Mobile App Development</td>
-                  <td>Jun 10, 2023</td>
-                  <td>Aug 30, 2023</td>
-                  <td><span class="status in-progress">In Progress</span></td>
-                  <td>8</td>
-                  <td>
-                    <button class="btn-icon"><i class="fas fa-eye"></i></button>
-                    <button class="btn-icon">
-                      <i class="fas fa-edit"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Marketing Campaign</td>
-                  <td>Jul 1, 2023</td>
-                  <td>Jul 31, 2023</td>
-                  <td><span class="status pending">Pending</span></td>
-                  <td>3</td>
-                  <td>
-                    <button class="btn-icon"><i class="fas fa-eye"></i></button>
-                    <button class="btn-icon">
-                      <i class="fas fa-edit"></i>
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td>API Integration</td>
-                  <td>Jul 15, 2023</td>
-                  <td>Aug 15, 2023</td>
-                  <td><span class="status in-progress">In Progress</span></td>
-                  <td>4</td>
-                  <td>
-                    <button class="btn-icon"><i class="fas fa-eye"></i></button>
-                    <button class="btn-icon">
-                      <i class="fas fa-edit"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+            <div class="stat-info">
+              <h3>In Progress</h3>
+              <p>4</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background-color: #e74a3b">
+              <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <div class="stat-info">
+              <h3>Pending</h3>
+              <p>2</p>
+            </div>
           </div>
         </div>
-      </main>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="js/script.js"></script>
-  </body>
+        <!-- Charts Row -->
+        <div class="charts-row">
+          <div class="chart-container">
+            <h3>Project Completion</h3>
+            <canvas id="completionChart"></canvas>
+          </div>
+          <div class="chart-container">
+            <h3>Monthly Traffic</h3>
+            <canvas id="trafficChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Projects Table -->
+        <div class="projects-table">
+          <div class="table-header">
+            <h3>Recent Projects</h3>
+            <button class="btn">View All</button>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Project Name</th>
+                <th>Start Date</th>
+                <th>Deadline</th>
+                <th>Status</th>
+                <th>Team</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Website Redesign</td>
+                <td>May 1, 2023</td>
+                <td>Jun 15, 2023</td>
+                <td><span class="status completed">Completed</span></td>
+                <td>5</td>
+                <td>
+                  <button class="btn-icon"><i class="fas fa-eye"></i></button>
+                  <button class="btn-icon">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>Mobile App Development</td>
+                <td>Jun 10, 2023</td>
+                <td>Aug 30, 2023</td>
+                <td><span class="status in-progress">In Progress</span></td>
+                <td>8</td>
+                <td>
+                  <button class="btn-icon"><i class="fas fa-eye"></i></button>
+                  <button class="btn-icon">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>Marketing Campaign</td>
+                <td>Jul 1, 2023</td>
+                <td>Jul 31, 2023</td>
+                <td><span class="status pending">Pending</span></td>
+                <td>3</td>
+                <td>
+                  <button class="btn-icon"><i class="fas fa-eye"></i></button>
+                  <button class="btn-icon">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>API Integration</td>
+                <td>Jul 15, 2023</td>
+                <td>Aug 15, 2023</td>
+                <td><span class="status in-progress">In Progress</span></td>
+                <td>4</td>
+                <td>
+                  <button class="btn-icon"><i class="fas fa-eye"></i></button>
+                  <button class="btn-icon">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/script.js"></script>
+</body>
+
 </html>
