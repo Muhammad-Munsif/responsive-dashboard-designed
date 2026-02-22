@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Optimized viewport for all devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Responsive Dashboard · Fixed</title>
+  <!-- Font Awesome & Chart.js -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    /* ----- RESET & VARIABLES ----- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    }
+    :root {
+      --primary: #4e73df;
+      --secondary: #1cc88a;
+      --warning: #f6c23e;
+      --danger: #e74a3b;
+      --dark: #5a5c69;
+      --light: #f8f9fc;
+      --sidebar-width: 250px;
+      --sidebar-collapsed: 80px;
+      --top-height: 60px;
+      --transition: 0.25s ease;
+    }
+    body {
+      background: var(--light);
+      color: #333;
+    }
+
+    /* ----- LAYOUT ----- */
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: var(--sidebar-width);
+      background: white;
+      box-shadow: 0 0.15rem 1.75rem rgba(58,59,69,0.15);
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      transform: translateX(-100%);
+      transition: transform var(--transition);
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar.active {
+      transform: translateX(0);
+    }
+    .sidebar-header {
+      height: var(--top-height);
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.2rem;
+    }
+    .sidebar-header h2 {
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .close-sidebar {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.3rem;
+      cursor: pointer;
+      display: none; /* visible only on mobile */
+      width: 44px;
+      height: 44px;
+      border-radius: 0.35rem;
+    }
+    .close-sidebar:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .sidebar-nav ul {
+      list-style: none;
+      padding: 1rem 0;
+    }
+    .sidebar-nav li a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.9rem 1.5rem;
+      color: var(--dark);
+      text-decoration: none;
+      transition: 0.2s;
+      min-height: 48px;
+    }
+    .sidebar-nav li a:hover {
+      background: var(--light);
+      color: var(--primary);
+    }
+    .sidebar-nav li.active a {
+      color: var(--primary);
+      font-weight: 600;
+      border-left: 4px solid var(--primary);
+      background: rgba(78, 115, 223, 0.05);
+    }
+    .sidebar-nav .badge {
+      margin-left: auto;
+      background: var(--danger);
+      color: white;
+      border-radius: 50%;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      flex: 1;
+      margin-left: 0;
+      transition: margin-left var(--transition);
+      width: 100%;
+    }
+
+    /* ===== TOP NAVIGATION ===== */
+    .top-nav {
+      height: var(--top-height);
+      background: white;
+      box-shadow: 0 0.15rem 1.75rem rgba(58,59,69,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1.2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      gap: 1rem;
+    }
+    .toggle-sidebar {
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      color: var(--dark);
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      border-radius: 0.35rem;
+      display: none; /* shown on mobile */
+    }
+    .toggle-sidebar:hover {
+      background: var(--light);
+    }
+    .search-bar {
+      flex: 1;
+      max-width: 400px;
+      display: flex;
+      align-items: center;
+      background: var(--light);
+      border-radius: 2rem;
+      overflow: hidden;
+    }
+    .search-bar input {
+      flex: 1;
+      border: none;
+      padding: 0.6rem 1rem;
+      background: transparent;
+      outline: none;
+      font-size: 0.95rem;
+    }
+    .search-bar button {
+      background: none;
+      border: none;
+      padding: 0.6rem 1rem;
+      color: var(--dark);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex-shrink: 0;
+    }
+    .notification {
+      position: relative;
+      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    .notification:hover {
+      background: var(--light);
+    }
+    .notification .badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: var(--danger);
+      color: white;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 0.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .user-profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #ddd;
+    }
+    .user-profile span {
+      font-weight: 500;
+    }
+    /* mobile search toggle (only visible on small screens) */
+    .mobile-search-toggle {
+      display: none !important;
+    }
+
+    /* ----- DASHBOARD CONTENT ----- */
+    .dashboard-content {
+      padding: 1.5rem;
+    }
+    .welcome-banner {
+      background: var(--primary);
+      color: white;
+      padding: 2rem;
+      border-radius: 0.75rem;
+      margin-bottom: 2rem;
+    }
+    .welcome-banner h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    .welcome-banner p {
+      opacity: 0.9;
+    }
+
+    /* stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .stat-card {
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 0.15rem 1.5rem rgba(58,59,69,0.08);
+      display: flex;
+      align-items: center;
+      padding: 1.5rem;
+      transition: transform 0.2s;
+    }
+    .stat-card:hover {
+      transform: translateY(-4px);
+    }
+    .stat-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      margin-right: 1rem;
+      flex-shrink: 0;
+    }
+    .stat-info h3 {
+      font-size: 0.9rem;
+      color: var(--dark);
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .stat-info p {
+      font-size: 1.8rem;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    /* charts */
+    .charts-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .chart-container {
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 0.15rem 1.5rem rgba(58,59,69,0.08);
+      padding: 1.5rem;
+      height: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+    .chart-container h3 {
+      color: var(--dark);
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+    .chart-container canvas {
+      flex: 1;
+      max-height: 220px;
+      width: 100% !important;
+    }
+
+    /* projects table */
+    .projects-table {
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 0.15rem 1.5rem rgba(58,59,69,0.08);
+      padding: 1.5rem;
+    }
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .table-header h3 {
+      color: var(--dark);
+      font-size: 1.2rem;
+    }
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 0.35rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+      min-height: 44px;
+    }
+    .btn:hover {
+      background: #3a5bd9;
+    }
+    .table-responsive {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+    }
+    th, td {
+      padding: 1rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #edf2f7;
+    }
+    th {
+      background: #f8fafd;
+      font-weight: 600;
+      color: var(--dark);
+    }
+    .status {
+      display: inline-block;
+      padding: 0.3rem 0.8rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: center;
+    }
+    .status.completed { background: rgba(28,200,138,0.15); color: #0f7b5a; }
+    .status.in-progress { background: rgba(246,194,62,0.15); color: #b8820f; }
+    .status.pending { background: rgba(231,74,59,0.15); color: #b53b30; }
+    .btn-icon {
+      background: none;
+      border: none;
+      color: #6c757d;
+      cursor: pointer;
+      font-size: 1rem;
+      width: 38px;
+      height: 38px;
+      border-radius: 0.35rem;
+      transition: 0.2s;
+    }
+    .btn-icon:hover {
+      background: var(--light);
+      color: var(--primary);
+    }
+
+    /* ----- MOBILE SEARCH (added dynamically) ----- */
+    .mobile-search {
+      display: none;
+      padding: 0.75rem 1.5rem;
+      background: white;
+      border-bottom: 1px solid #eee;
+    }
+    .mobile-search.active {
+      display: block;
+    }
+    .mobile-search .search-bar {
+      max-width: 100%;
+      margin: 0;
+    }
+
+    /* ===== RESPONSIVE FIXES (consolidated) ===== */
+    /* large desktop: expanded sidebar */
+    @media (min-width: 1201px) {
+      .sidebar {
+        transform: translateX(0);
+        width: var(--sidebar-width);
+      }
+      .main-content {
+        margin-left: var(--sidebar-width);
+      }
+      .close-sidebar, .toggle-sidebar {
+        display: none !important;
+      }
+    }
+
+    /* medium desktop: collapsed sidebar (icons only) */
+    @media (min-width: 769px) and (max-width: 1200px) {
+      .sidebar {
+        transform: translateX(0);
+        width: var(--sidebar-collapsed);
+      }
+      .sidebar-header h2 span,
+      .sidebar-nav li a span:not(.badge) {
+        display: none;
+      }
+      .sidebar-header h2 {
+        justify-content: center;
+        width: 100%;
+      }
+      .sidebar-nav li a {
+        justify-content: center;
+        padding: 1rem 0;
+      }
+      .sidebar-nav .badge {
+        display: none;
+      }
+      .main-content {
+        margin-left: var(--sidebar-collapsed);
+      }
+      .close-sidebar, .toggle-sidebar {
+        display: none !important;
+      }
+    }
+
+    /* tablet & mobile: sidebar hidden by default, toggled with button */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 280px;
+        transform: translateX(-100%);
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      .sidebar-header h2 span,
+      .sidebar-nav li a span {
+        display: inline;
+      }
+      .sidebar-nav li a {
+        justify-content: flex-start;
+        padding: 0.9rem 1.5rem;
+      }
+      .sidebar-nav .badge {
+        display: flex;
+      }
+      .close-sidebar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .toggle-sidebar {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .main-content {
+        margin-left: 0;
+      }
+      /* hide default search bar, show mobile toggle */
+      .search-bar:not(.mobile-search .search-bar) {
+        display: none;
+      }
+      .mobile-search-toggle {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        background: none;
+        border: none;
+        color: var(--dark);
+        font-size: 1.2rem;
+        border-radius: 50%;
+      }
+      .mobile-search-toggle:hover {
+        background: var(--light);
+      }
+      .user-profile span {
+        display: none;
+      }
+    }
+
+    /* small mobile adjustments */
+    @media (max-width: 576px) {
+      .dashboard-content {
+        padding: 1rem;
+      }
+      .welcome-banner {
+        padding: 1.5rem 1rem;
+      }
+      .welcome-banner h1 {
+        font-size: 1.5rem;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .charts-row {
+        grid-template-columns: 1fr;
+      }
+      .chart-container {
+        height: 260px;
+      }
+      .table-header .btn {
+        width: 100%;
+      }
+    }
+    /* extra small devices */
+    @media (max-width: 400px) {
+      html { font-size: 14px; }
+      .stat-card { padding: 1rem; }
+    }
+
+    /* touch target assurance */
+    button, .btn, .btn-icon, .sidebar-nav li a, .close-sidebar, .toggle-sidebar {
+      min-width: 44px;
+      min-height: 44px;
+    }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="mainSidebar">
+      <div class="sidebar-header">
+        <h2><i class="fas fa-chart-line"></i> <span>Dashboard</span></h2>
+        <button class="close-sidebar" id="closeSidebar" aria-label="Close sidebar"><i class="fas fa-times"></i></button>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li class="active"><a href="#"><i class="fas fa-home"></i> <span>Home</span></a></li>
+          <li><a href="#"><i class="fas fa-chart-bar"></i> <span>Analytics</span></a></li>
+          <li><a href="#"><i class="fas fa-envelope"></i> <span>Messages</span> <span class="badge">5</span></a></li>
+          <li><a href="#"><i class="fas fa-calendar"></i> <span>Calendar</span></a></li>
+          <li><a href="#"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+          <li><a href="#"><i class="fas fa-user"></i> <span>Profile</span></a></li>
+          <li><a href="#"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+      <!-- TOP NAV -->
+      <header class="top-nav">
+        <button class="toggle-sidebar" id="toggleSidebar" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+        <div class="search-bar">
+          <input type="text" placeholder="Search...">
+          <button><i class="fas fa-search"></i></button>
+        </div>
+        <div class="user-profile">
+          <button class="mobile-search-toggle" id="mobileSearchToggle" aria-label="Search"><i class="fas fa-search"></i></button>
+          <div class="notification">
+            <i class="fas fa-bell"></i>
+            <span class="badge">3</span>
+          </div>
+          <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Ccircle fill='%234e73df' cx='20' cy='20' r='20'/%3E%3Ctext fill='white' x='50%25' y='50%25' text-anchor='middle' dy='.3em' font-size='18' font-family='Arial'%3EJD%3C/text%3E%3C/svg%3E" alt="User avatar">
+          <span>John Doe</span>
+        </div>
+      </header>
+
+      <!-- Mobile search bar (hidden by default) -->
+      <div class="mobile-search" id="mobileSearch">
+        <div class="search-bar">
+          <input type="text" placeholder="Search...">
+          <button><i class="fas fa-search"></i></button>
+        </div>
+      </div>
+
+      <!-- DASHBOARD CONTENT -->
+      <div class="dashboard-content">
+        <div class="welcome-banner">
+          <h1>Welcome back, John!</h1>
+          <p>Here's what's happening with your dashboard today.</p>
+        </div>
+
+        <!-- STATS CARDS -->
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon" style="background:#4e73df"><i class="fas fa-calendar"></i></div><div class="stat-info"><h3>Total Projects</h3><p>24</p></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#1cc88a"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h3>Completed</h3><p>18</p></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#f6c23e"><i class="fas fa-tasks"></i></div><div class="stat-info"><h3>In Progress</h3><p>4</p></div></div>
+          <div class="stat-card"><div class="stat-icon" style="background:#e74a3b"><i class="fas fa-exclamation-circle"></i></div><div class="stat-info"><h3>Pending</h3><p>2</p></div></div>
+        </div>
+
+        <!-- CHARTS ROW -->
+        <div class="charts-row">
+          <div class="chart-container"><h3>Project Completion</h3><canvas id="completionChart"></canvas></div>
+          <div class="chart-container"><h3>Monthly Traffic</h3><canvas id="trafficChart"></canvas></div>
+        </div>
+
+        <!-- PROJECTS TABLE -->
+        <div class="projects-table">
+          <div class="table-header"><h3>Recent Projects</h3><button class="btn">View All</button></div>
+          <div class="table-responsive">
+            <table>
+              <thead><tr><th>Project Name</th><th>Start Date</th><th>Deadline</th><th>Status</th><th>Team</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td>Website Redesign</td><td>May 1, 2023</td><td>Jun 15, 2023</td><td><span class="status completed">Completed</span></td><td>5</td><td><button class="btn-icon"><i class="fas fa-eye"></i></button><button class="btn-icon"><i class="fas fa-edit"></i></button></td></tr>
+                <tr><td>Mobile App Development</td><td>Jun 10, 2023</td><td>Aug 30, 2023</td><td><span class="status in-progress">In Progress</span></td><td>8</td><td><button class="btn-icon"><i class="fas fa-eye"></i></button><button class="btn-icon"><i class="fas fa-edit"></i></button></td></tr>
+                <tr><td>Marketing Campaign</td><td>Jul 1, 2023</td><td>Jul 31, 2023</td><td><span class="status pending">Pending</span></td><td>3</td><td><button class="btn-icon"><i class="fas fa-eye"></i></button><button class="btn-icon"><i class="fas fa-edit"></i></button></td></tr>
+                <tr><td>API Integration</td><td>Jul 15, 2023</td><td>Aug 15, 2023</td><td><span class="status in-progress">In Progress</span></td><td>4</td><td><button class="btn-icon"><i class="fas fa-eye"></i></button><button class="btn-icon"><i class="fas fa-edit"></i></button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    (function() {
+      // ----- SIDEBAR TOGGLE -----
+      const sidebar = document.getElementById('mainSidebar');
+      const toggleBtn = document.getElementById('toggleSidebar');
+      const closeBtn = document.getElementById('closeSidebar');
+      const mobileSearchToggle = document.getElementById('mobileSearchToggle');
+      const mobileSearchDiv = document.getElementById('mobileSearch');
+
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          sidebar.classList.toggle('active');
+        });
+      }
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          sidebar.classList.remove('active');
+        });
+      }
+
+      // close sidebar when clicking outside on mobile
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 768 && sidebar.classList.contains('active') && 
+            !sidebar.contains(e.target) && e.target !== toggleBtn) {
+          sidebar.classList.remove('active');
+        }
+      });
+
+      // ----- MOBILE SEARCH TOGGLE -----
+      if (mobileSearchToggle && mobileSearchDiv) {
+        mobileSearchToggle.addEventListener('click', () => {
+          mobileSearchDiv.classList.toggle('active');
+        });
+      }
+
+      // ----- CHARTS INIT -----
+      const completionCtx = document.getElementById('completionChart')?.getContext('2d');
+      const trafficCtx = document.getElementById('trafficChart')?.getContext('2d');
+
+      if (completionCtx) {
+        new Chart(completionCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Completed', 'In Progress', 'Pending'],
+            datasets: [{
+              data: [18, 4, 2],
+              backgroundColor: ['#1cc88a', '#f6c23e', '#e74a3b'],
+              hoverBackgroundColor: ['#17a673', '#dda20a', '#be2617'],
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: { legend: { position: 'bottom' } }
+          }
+        });
+      }
+
+      if (trafficCtx) {
+        new Chart(trafficCtx, {
+          type: 'line',
+          data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+            datasets: [{
+              label: 'Visitors',
+              data: [1200, 1900, 1700, 2100, 2300, 2500, 2800],
+              borderColor: '#4e73df',
+              backgroundColor: 'rgba(78,115,223,0.05)',
+              tension: 0.2,
+              fill: true,
+              pointBackgroundColor: '#4e73df',
+              pointBorderColor: '#fff',
+              pointRadius: 3
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true } },
+            plugins: { legend: { display: false } }
+          }
+        });
+      }
+
+      // ----- RESIZE HANDLER (ensures charts stay sharp) -----
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          // chart.js handles resize automatically when maintainAspectRatio: false
+          // but we can trigger a manual redraw if needed (optional)
+        }, 200);
+      });
+
+      // Fix for orientation change on mobile
+      window.addEventListener('orientationchange', () => {
+        setTimeout(() => {
+          window.dispatchEvent(new Event('resize'));
+        }, 200);
+      });
+    })();
+  </script>
+</body>
+</html>
