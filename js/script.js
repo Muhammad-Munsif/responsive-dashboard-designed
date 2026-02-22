@@ -1,4 +1,4 @@
-<script>
+
     (function() {
       // ----- SIDEBAR TOGGLE -----
       const sidebar = document.getElementById('mainSidebar');
@@ -101,4 +101,3 @@
         }, 200);
       });
     })();
-  </script>
