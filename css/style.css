@@ -1,4 +1,4 @@
-<script>
+
     (function () {
       // ----- SIDEBAR TOGGLE (same) -----
       const sidebar = document.getElementById('mainSidebar');
@@ -103,4 +103,3 @@
 
       // Set default active (Home already active by class)
     })();
-  </script>
