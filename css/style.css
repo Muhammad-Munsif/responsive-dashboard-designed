@@ -1,5 +1,5 @@
 
-    (function () {
+    (function () =>{
       // ----- SIDEBAR TOGGLE (same) -----
       const sidebar = document.getElementById('mainSidebar');
       const toggleBtn = document.getElementById('toggleSidebar');
@@ -103,3 +103,4 @@
 
       // Set default active (Home already active by class)
     })();
+  
