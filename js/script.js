@@ -1,4 +1,4 @@
-<script>
+
     (function () {
       // ----- SIDEBAR TOGGLE (same) -----
       const sidebar = document.getElementById('mainSidebar');
@@ -127,4 +127,3 @@
         navigateTo('home');
       }
     })();
-  </script>
