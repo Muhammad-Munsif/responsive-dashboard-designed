@@ -1,4 +1,4 @@
-<script>
+
     (function() {
       // ----- sidebar & mobile toggles (same as before) -----
       const sidebar = document.getElementById('mainSidebar');
@@ -60,4 +60,4 @@
       // ensure home active
       if (!pageSections.home?.classList.contains('active-page')) navigateTo('home');
     })();
-  </script>
+  
