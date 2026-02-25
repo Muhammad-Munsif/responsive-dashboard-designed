@@ -1,4 +1,4 @@
-<style>
+
     /* ----- MODERN RESET / VARIABLES (enhanced) ----- */
     * {
       margin: 0;
@@ -623,4 +623,3 @@
     /* small touches */
     button, .btn, .btn-icon, .sidebar-nav li a, .close-sidebar, .toggle-sidebar { min-width: 48px; min-height: 48px; }
     ::selection { background: var(--primary-light); color: white; }
-  </style>
